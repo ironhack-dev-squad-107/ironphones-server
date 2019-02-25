@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
+const cors = require("cors");
 
 mongoose
   .connect("mongodb://localhost/ironphones-server-starter", {
@@ -28,5 +29,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// Allow Cross-Origin Resource Sharing – CORS
+// (allows access to the API from other domains/origins)
+app.use(
+  cors({
+    // receive cookies from other domains/origins
+    credentials: true,
+    // only these domains/origins can access the API – the REACT domain!
+    origin: ["http://localhost:3000"]
+  })
+);
 
 module.exports = app;
