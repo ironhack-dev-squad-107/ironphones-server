@@ -41,4 +41,9 @@ app.use(
   })
 );
 
+const phone = require("./routes/phone-router.js");
+// all routes in the phone router will start with "/api"
+// (example: "/phones" -> "/api/phones")
+app.use("/api", phone);
+
 module.exports = app;
