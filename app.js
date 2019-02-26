@@ -68,4 +68,9 @@ const phone = require("./routes/phone-router.js");
 // (example: "/phones" -> "/api/phones")
 app.use("/api", phone);
 
+const auth = require("./routes/auth-router.js");
+// all routes in the auth router will start with "/api"
+// (example: "/logout" -> "/api/logout")
+app.use("/api", auth);
+
 module.exports = app;

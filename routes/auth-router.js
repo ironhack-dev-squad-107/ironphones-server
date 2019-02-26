@@ -5,10 +5,6 @@ const User = require("../models/user-model.js");
 
 const router = express.Router();
 
-router.get("/signup", (req, res, next) => {
-  res.render("auth-views/signup-form.hbs");
-});
-
 router.post("/process-signup", (req, res, next) => {
   const { fullName, email, originalPassword } = req.body;
 
@@ -37,10 +33,6 @@ router.post("/process-signup", (req, res, next) => {
       res.redirect("/");
     })
     .catch(err => next(err));
-});
-
-router.get("/login", (req, res, next) => {
-  res.render("auth-views/login-form.hbs");
 });
 
 router.post("/process-login", (req, res, next) => {
