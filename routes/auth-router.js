@@ -40,12 +40,9 @@ router.post("/process-login", (req, res, next) => {
     .then(userDoc => {
       // User.findOne() will give us NULL in userDoc if it found nothing
       if (!userDoc) {
-        // req.flash() sends a feedback message before a redirect
-        // (it's defined by the "connect-flash" npm package)
-        req.flash("error", "Email is incorrect. 🤦‍♂️");
-
-        // redirect to LOGIN PAGE if result is NULL (no account with that email)
-        res.redirect("/login");
+        // this is like next(err) but we are creating our own error object
+        // (skips straight to the error handling middleware in bin/www)
+        next(new Error("Email is incorrect. 🤦‍♂️"));
         // use return to STOP the function here if the EMAIL is BAD
         return;
       }
@@ -55,12 +52,9 @@ router.post("/process-login", (req, res, next) => {
       // validate the password by using bcrypt.compareSync()
       // (bcrypt.compareSync() will return FALSE if the passwords don't match)
       if (!bcrypt.compareSync(originalPassword, encryptedPassword)) {
-        // req.flash() sends a feedback message before a redirect
-        // (it's defined by the "connect-flash" npm package)
-        req.flash("error", "Password is incorrect. 🤦‍♀️");
-
-        // redirect to LOGIN PAGE if the passwords don't match
-        res.redirect("/login");
+        // this is like next(err) but we are creating our own error object
+        // (skips straight to the error handling middleware in bin/www)
+        next(new Error("Password is incorrect. 🤦‍♀️"));
         // use return to STOP the function here if the PASSWORD is BAD
         return;
       }
@@ -73,10 +67,9 @@ router.post("/process-login", (req, res, next) => {
       // req.logIn() is a Passport method that calls serializeUser()
       // (that saves the USER ID in the session which means we are logged-in)
       req.logIn(userDoc, () => {
-        // req.flash() sends a feedback message before a redirect
-        // (it's defined by the "connect-flash" npm package)
-        req.flash("success", "Log in success! 😎");
-        res.redirect("/");
+        // hide encryptedPassword before sending the JSON (it's a security risk)
+        userDoc.encryptedPassword = undefined;
+        res.json(userDoc);
       });
     })
     .catch(err => next(err));
