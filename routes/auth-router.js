@@ -79,8 +79,8 @@ router.get("/logout", (req, res, next) => {
   // req.logOut() is a Passport method that removes the USER ID from the session
   req.logOut();
 
-  req.flash("success", "Logged out successfully! 🙋‍♀️");
-  res.redirect("/");
+  // send some JSON to the client
+  res.json({ message: "You are logged out!" });
 });
 
 module.exports = router;
