@@ -10,12 +10,9 @@ router.post("/process-signup", (req, res, next) => {
 
   // enforce password rules (can't be empty and MUST have a digit)
   if (!originalPassword || !originalPassword.match(/[0-9]/)) {
-    // req.flash() sends a feedback message before a redirect
-    // (it's defined by the "connect-flash" npm package)
-    req.flash("error", "Password can't be blank and must contain a number.");
-
-    // redirect to the SIGNUP PAGE if the password is BAD
-    res.redirect("/signup");
+    // this is like next(err) but we are creating our own error object
+    // (skips straight to the error handling middleware in bin/www)
+    next(new Error("Password can't be blank and must contain a number."));
     // use return to STOP the function here if the password is BAD
     return;
   }
@@ -24,13 +21,13 @@ router.post("/process-signup", (req, res, next) => {
   const encryptedPassword = bcrypt.hashSync(originalPassword, 10);
 
   User.create({ fullName, email, encryptedPassword })
-    .then(() => {
-      // req.flash() sends a feedback message before a redirect
-      // (it's defined by the "connect-flash" npm package)
-      req.flash("success", "Sign up success! 😃");
-
-      // redirect to the HOME PAGE if the sign up WORKED
-      res.redirect("/");
+    .then(userDoc => {
+      // log in the user automatically when they create their account
+      req.logIn(userDoc, () => {
+        // hide encryptedPassword before sending the JSON (it's a security risk)
+        userDoc.encryptedPassword = undefined;
+        res.json(userDoc);
+      });
     })
     .catch(err => next(err));
 });
