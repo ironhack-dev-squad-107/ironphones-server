@@ -73,4 +73,7 @@ const auth = require("./routes/auth-router.js");
 // (example: "/logout" -> "/api/logout")
 app.use("/api", auth);
 
+const file = require("./routes/file-router.js");
+app.use("/api", file);
+
 module.exports = app;
