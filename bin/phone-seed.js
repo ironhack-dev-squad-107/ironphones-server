@@ -7,7 +7,7 @@ const Phone = require("../models/phone-model.js");
 const allPhones = require("./phones.json");
 
 mongoose
-  .connect("mongodb://localhost/ironphones-server-starter", {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true
   })
   .then(x => {

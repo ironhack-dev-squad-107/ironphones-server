@@ -15,7 +15,7 @@ const passport = require("passport");
 require("./config/passport-setup.js");
 
 mongoose
-  .connect("mongodb://localhost/ironphones-server-starter", {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true
   })
   .then(x => {
